@@ -7,4 +7,4 @@ on:
 
 jobs:
   use-testing-workflow:
-    uses: DLS-project-microservices/admin_inventory/.github/workflows/pull_request.yml@main
+    uses: DLS-project-microservices/workflows/.github/workflows/pull_request.yml@main
