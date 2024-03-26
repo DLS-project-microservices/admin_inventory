@@ -1,0 +1,10 @@
+name: Run tests
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  use-testing-workflow:
+    uses: DLS-project-microservices/admin_inventory/.github/workflows/pull_request.yml@main
