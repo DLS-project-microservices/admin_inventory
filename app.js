@@ -19,7 +19,6 @@ app.get("/test", async (req, res) => {
     await publishProductEvent({ id: 123}, 'created')
     await publishProductEvent({ id: 123}, 'deleted')
     await publishProductEvent({ id: 123}, 'updated')
-    console.log('test');
 
     const foundProduct = await Product.findOne({
         where: {
