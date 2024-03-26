@@ -2,9 +2,9 @@
 
 container_name=mysql-invadmin
 
-sudo docker run --name $container_name -e MYSQL_ROOT_PASSWORD=123123 -p 3306:3306 -d mysql
+docker run --name $container_name -e MYSQL_ROOT_PASSWORD=123123 -p 3306:3306 -d mysql
 echo "Starting $container_name..."
 sleep 20
 echo "Container started. Creating database..."
-sudo docker exec -i $container_name mysql -uroot -p123123 < ./db.sql
+docker exec -i $container_name mysql -uroot -p123123 < ./db.sql
 echo "Done!"

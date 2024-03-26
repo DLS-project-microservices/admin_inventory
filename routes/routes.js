@@ -1,53 +1,58 @@
-const express = require('express');
+import express from 'express';
+import { 
+  findAllProducts,
+  createProduct,
+  findProduct,
+  updateProduct,
+  deleteProduct
+   } from '../service/product.js';
 const router = express.Router();
 
-// Sample data - replace this with your database integration
-let items = [];
-
 // Get all items
-router.get('/AllItems', (req, res) => {
-  res.json(items);
+router.get('/', async (req, res) => {
+  const allProducts = await findAllProducts();
+  console.log(allProducts);
+  res.status(200).send(allProducts);
 });
 
-// Get single item by ID
-// Replace ':id' with id of an existing item
-router.get('/:id', (req, res) => {
+// Create an item
+router.post('/', async (req, res) => {
+  const newProduct = await createProduct(req.body);
+  res.status(200).send(newProduct);
+});
+
+// Find item
+router.get('/:id', async (req, res) =>{
   const id = req.params.id;
-  const item = items.find(item => item.id === id);
-  if (!item) {
-    return res.status(404).json({ message: 'Item not found' });
+  const ourProduct = await findProduct(id);
+  if (!ourProduct) {
+    return res.status(404).send({ message: `ERROR: Product ID: ${id} could not be found` });
   }
-  res.json(item);
-});
-
-// Create a new item
-router.post('/', (req, res) => {
-  const newItem = req.body;
-  items.push(newItem);
-  res.status(201).json(newItem);
-});
+  res.status(200).send(ourProduct);
+})
 
 // Update an item by ID
-router.put('/:id', (req, res) => {
+// TODO: Optimize function so it doesn't need to find product twice.
+router.put('/:id', async (req, res) => {
   const id = req.params.id;
-  const updatedItem = req.body;
-  const index = items.findIndex(item => item.id === id);
-  if (index === -1) {
-    return res.status(404).json({ message: 'Item not found' });
-  }
-  items[index] = updatedItem;
-  res.json(updatedItem);
-});
+  const ourProduct = await findProduct(id);
+  if (!ourProduct) {
+    return res.status(404).send({ message: `ERROR: Product ID: ${id} could not be found` });
+  } 
+  await updateProduct(req.body, id);
+  const updatedProduct = await findProduct(id)
+  return res.status(200).send(updatedProduct);
+  });
 
 // Delete an item by ID
-router.delete('/:id', (req, res) => {
+router.delete('/:id', async (req, res) => {
   const id = req.params.id;
-  const index = items.findIndex(item => item.id === id);
-  if (index === -1) {
-    return res.status(404).json({ message: 'Item not found' });
-  }
-  items.splice(index, 1);
-  res.json({ message: 'Item deleted' });
-});
+  const ourProduct = await findProduct(id);
+  if (!ourProduct) {
+    return res.status(404).send({ message: `ERROR: Product ID: ${id} could not be found` });
+  } 
+  await deleteProduct(id);
+  return res.status(200).send({ message: `Product ID: ${id} successfully deleted` })
+  });
 
-module.exports = router;
+export default router;
