@@ -5,7 +5,7 @@ import sequelize from './database/connection.js';
 await sequelize.sync({ force: true });
 
 const app = express();
-//test workflow
+//test workflow v2
 app.get("/test", async (req, res) => {
     const createdProduct = await Product.create({ name: 'test product' });
     const createdCategory = await Category.create({ name: 'test category'});
