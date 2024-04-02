@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import { Product, Category } from './models/index.js'
 import sequelize from './database/connection.js';
 import routes from './routes/routes.js';
@@ -8,7 +9,10 @@ import { publishProductEvent } from './messages/product.js';
 await sequelize.sync({ force: true });
 
 const app = express();
-
+app.use(cors({
+    credentials: true,
+    origin: "*"
+}));
 app.use(express.json());
 app.use('/api/products', routes);
 
