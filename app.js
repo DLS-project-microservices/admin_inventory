@@ -3,6 +3,7 @@ import cors from 'cors';
 import { Product, Category } from './models/index.js'
 import sequelize from './database/connection.js';
 import routes from './routes/routes.js';
+import categoryRoutes from './routes/categoryRoutes.js';
 import { publishProductEvent } from './messages/product.js';
 
 
@@ -15,6 +16,7 @@ app.use(cors({
 }));
 app.use(express.json());
 app.use('/api/products', routes);
+app.use('/api/category', categoryRoutes);
 
 app.get("/test", async (req, res) => {
     const createdProduct = await Product.create({ name: 'test product' });
