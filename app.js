@@ -5,9 +5,12 @@ import sequelize from './database/connection.js';
 import routes from './routes/routes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import { publishProductEvent } from './messages/product.js';
+import insertCategories from './database/seed.js';
 
 
 await sequelize.sync({ force: true });
+await insertCategories();
+
 
 const app = express();
 app.use(cors({
