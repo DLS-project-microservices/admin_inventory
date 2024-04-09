@@ -6,9 +6,25 @@ async function findAllProducts() {
 }
 
 async function createProduct(product) {
-    const newProduct = await Product.create(product);
-    return newProduct;
+    try {
+        // Check if the categories array is provided
+        if (!product.categories || product.categories.length === 0) {
+            throw new Error("At least one category must be selected.");
+        }
+
+        // Create the product
+        const newProduct = await Product.create(product);
+
+        // Add associations with categories
+        await newProduct.addCategories(product.categories);
+
+        return newProduct;
+    } catch (error) {
+        console.error("Error in createProduct:", error);
+        throw error;
+    }
 }
+
 
 async function findProduct(id) {
     const product = await Product.findOne({
