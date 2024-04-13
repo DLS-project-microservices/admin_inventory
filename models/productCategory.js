@@ -8,5 +8,4 @@ const ProductCategory = sequelize.define('product_category', {
         primaryKey: true
     },
 });
-
 export default ProductCategory;

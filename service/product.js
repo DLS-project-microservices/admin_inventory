@@ -1,7 +1,9 @@
 import { Category, Product } from '../models/index.js';
 
 async function findAllProducts() {
-    const products = await Product.findAll();
+    const products = await Product.findAll({
+        include: Category // Include associated categories
+    });
     return products;
 }
 
