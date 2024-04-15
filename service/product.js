@@ -39,14 +39,27 @@ async function findProduct(id) {
 }
 
 async function updateProduct(product, id) {
-    const newProduct = await Product.update(product, {
-        where: {
-            id: id,
+    try {
+        const existingProduct = await Product.findByPk(id);
+        if (!existingProduct) {
+            throw new Error(`Product with ID ${id} not found`);
         }
-    });
-    console.log(newProduct);
-    return newProduct;
+        
+        await existingProduct.update(product);
+
+        if (product.categories && product.categories.length > 0) {
+            await existingProduct.setCategories(product.categories);
+        }
+
+        const updatedProduct = await Product.findByPk(id, { include: Category });
+
+        return updatedProduct;
+    } catch (error) {
+        console.error("Error updating product:", error);
+        throw error;
+    }
 }
+
 
 async function deleteProduct(id) {
     const productToDelete = await Product.destroy({
