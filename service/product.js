@@ -44,10 +44,12 @@ async function updateProduct(product, id) {
         if (!existingProduct) {
             throw new Error(`Product with ID ${id} not found`);
         }
-        
+
         await existingProduct.update(product);
 
-        if (product.categories && product.categories.length > 0) {
+        if (product.categories === null || product.categories.length === 0) {
+            await existingProduct.setCategories([]);
+        } else if (product.categories && product.categories.length > 0) {
             await existingProduct.setCategories(product.categories);
         }
 
