@@ -5,6 +5,7 @@ import sequelize from './database/connection.js';
 import routes from './routes/routes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import { publishProductEvent } from './messages/product.js';
+import { publishCategoryEvent } from './messages/category.js';
 import insertCategories from './database/seed.js';
 
 
@@ -28,6 +29,7 @@ app.get("/test", async (req, res) => {
     await publishProductEvent({ id: 123}, 'created')
     await publishProductEvent({ id: 123}, 'deleted')
     await publishProductEvent({ id: 123}, 'updated')
+    await publishCategoryEvent({ id: 123}, 'created')
     console.log('test2');
 
     const foundProduct = await Product.findOne({
