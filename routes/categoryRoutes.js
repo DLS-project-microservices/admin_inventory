@@ -38,7 +38,7 @@ categoryRoutes.get('/:id', async (req, res) => {
 categoryRoutes.post('/', async (req, res) => {
     try {
         const newCategory = await createCategory(req.body);
-        await publishCategoryEvent({ id: req.body.id }, 'created')
+        await publishCategoryEvent(newCategory, 'created')
         res.status(200).send(newCategory);
     } catch (error) {
         console.error("Error creating category:", error);
@@ -57,8 +57,9 @@ categoryRoutes.put('/:id', async (req, res) => {
         if (!updateCategory) {
             return res.status(500).send({ message: `ERROR: Failed to update category with ID: ${id}` });
         }
-        await publishCategoryEvent({ id: req.params.id }, 'updated')
-        res.status(200).send(updateCategory);
+        const category = await findCategoryById(id)
+        await publishCategoryEvent(category, 'updated')
+        res.status(200).send(category);
     } catch (error) {
         console.error("Error updating category:", error);
         res.status(500).send({ error: "Error updating category" });
@@ -73,7 +74,7 @@ categoryRoutes.delete('/:id', async (req, res) => {
             return res.status(404).send({ message: `ERROR: Category ID: ${id} could not be found` });
         }
         await deleteCategoryById(id);
-        await publishCategoryEvent({ id: req.params.id }, 'deleted')
+        await publishCategoryEvent(categoryById, 'deleted')
         res.status(200).send({ message: `Category ID: ${id} successfully deleted` });
     } catch (error) {
         console.error("Error deleting category:", error);
