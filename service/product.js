@@ -1,5 +1,5 @@
 import { Category, Product } from '../models/index.js';
-import publishProductEvent from '../messages/product.js'
+import {publishProductEvent }from '../messages/product.js'
 
 async function findAllProducts() {
     const products = await Product.findAll({
@@ -20,7 +20,7 @@ async function createProduct(product) {
 
         // Add associations with categories
         await newProduct.addCategories(product.categories);
-        await publishProductEvent(product, "createProduct");
+        await publishProductEvent(product, "created");
 
         return newProduct;
     } catch (error) {
@@ -56,7 +56,7 @@ async function updateProduct(product, id) {
         }
 
         const updatedProduct = await Product.findByPk(id, { include: Category });
-        await publishProductEvent(product, "updateProduct");
+        await publishProductEvent(product, "updated");
         return updatedProduct;
     } catch (error) {
         console.error("Error updating product:", error);
@@ -71,7 +71,8 @@ async function deleteProduct(id) {
             id: id
         }
     });
-    await publishProductEvent(id, "deleteProduct");
+    const deletedProduct = await findProduct(id);
+    await publishProductEvent(deletedProduct, "deleted");
     console.log(productToDelete);
     return productToDelete;
 }
