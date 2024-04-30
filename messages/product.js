@@ -1,18 +1,46 @@
-import connect from './connection.js'
+import connectToRabbitMQ from "./connection.js";
+
+let orderExchange;
+let channel;
+
+async function connectToProductExchange() {
+    const exchangeName = 'product';
+
+    if (!orderExchange || !channel) {
+        try {
+            channel = await connectToRabbitMQ();
+            console.log(`Conneting to RabbitMQ exchange: ${exchangeName}...`)
+            orderExchange = await channel.assertExchange(exchangeName, 'direct', {
+            durable: true
+        });
+            console.log(`Established connection to RabbitMQ exchange: ${exchangeName}`)
+        }
+        catch (error) {
+            console.log(error);
+        }
+    }
+    return {
+        exchangeName,
+        channel
+    }
+}
 
 async function publishProductEvent(product, productStatus) {
     if (!product || !productStatus) {
         throw new Error('Invalid parameters: need to have both product and productStatus arguments')
     }
-        const { channel, exchange} = await connect();
-        const message = {
-            status: productStatus,
-            product: product
-        }
-        channel.publish(exchange, 'product change', Buffer.from(JSON.stringify(message)));
+    const { exchangeName, channel} = await connectToProductExchange();
+    const message = {
+        status: productStatus,
+        product: product
+    }
+    channel.publish(exchangeName, 'product change', Buffer.from(JSON.stringify(message)));
     }
 
+await connectToProductExchange();
+
 export {
-    publishProductEvent
+    publishProductEvent,
+    connectToProductExchange
 }
 
