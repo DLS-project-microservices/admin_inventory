@@ -1,5 +1,5 @@
 import { Category, Product } from '../models/index.js';
-import publishProductEvent from '../messages/product.js'
+import { publishProductEvent } from '../messages/product.js'
 
 async function findAllProducts() {
     const products = await Product.findAll({
@@ -20,9 +20,16 @@ async function createProduct(product) {
 
         // Add associations with categories
         await newProduct.addCategories(product.categories);
-        await publishProductEvent(product, "createProduct");
 
-        return newProduct;
+        const createdProduct = await Product.findOne({
+            where: {
+                id: newProduct.dataValues.id,
+            },
+            include: [Category]
+        })
+        await publishProductEvent(createdProduct, "created");
+
+        return createdProduct;
     } catch (error) {
         console.error("Error in createProduct:", error);
         throw error;
@@ -34,6 +41,16 @@ async function findProduct(id) {
     const product = await Product.findOne({
         where: {
             id: id,
+        },
+        include: [Category]
+    })
+    return product;
+}
+
+async function findProductByName(name) {
+    const product = await Product.findOne({
+        where: {
+            name: name,
         },
         include: [Category]
     })
@@ -78,6 +95,7 @@ async function deleteProduct(id) {
 
 export {
     findAllProducts,
+    findProductByName,
     createProduct,
     findProduct,
     updateProduct,
