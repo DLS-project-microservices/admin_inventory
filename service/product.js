@@ -66,14 +66,15 @@ async function updateProduct(product, id) {
 
         await existingProduct.update(product);
 
-        if (product.categories === null || product.categories.length === 0) {
+        if (!product.categories) {
             await existingProduct.setCategories([]);
         } else if (product.categories && product.categories.length > 0) {
             await existingProduct.setCategories(product.categories);
         }
 
         const updatedProduct = await Product.findByPk(id, { include: Category });
-        await publishProductEvent(product, "updateProduct");
+        await publishProductEvent(updatedProduct, "updated");
+
         return updatedProduct;
     } catch (error) {
         console.error("Error updating product:", error);
@@ -83,14 +84,16 @@ async function updateProduct(product, id) {
 
 
 async function deleteProduct(id) {
-    const productToDelete = await Product.destroy({
+    const productToBeDeleted = await findProduct(id);
+    
+    await Product.destroy({
         where: {
-            id: id
+            id: productToBeDeleted.dataValues.id
         }
     });
-    await publishProductEvent(id, "deleteProduct");
-    console.log(productToDelete);
-    return productToDelete;
+    await publishProductEvent(productToBeDeleted, "deleted");
+
+    return productToBeDeleted;
 }
 
 export {
