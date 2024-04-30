@@ -1,16 +1,16 @@
 import connectToRabbitMQ from "./connection.js";
 
-let orderExchange;
+let productExchange;
 let channel;
 
 async function connectToProductExchange() {
     const exchangeName = 'product';
 
-    if (!orderExchange || !channel) {
+    if (!productExchange || !channel) {
         try {
             channel = await connectToRabbitMQ();
             console.log(`Conneting to RabbitMQ exchange: ${exchangeName}...`)
-            orderExchange = await channel.assertExchange(exchangeName, 'direct', {
+            productExchange = await channel.assertExchange(exchangeName, 'direct', {
             durable: true
         });
             console.log(`Established connection to RabbitMQ exchange: ${exchangeName}`)
