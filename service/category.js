@@ -1,5 +1,10 @@
 import { Category, Product } from '../models/index.js';
 
+/**
+ * @module category
+ * Fetches all categories
+ * @returns {Array}
+ */
 async function findAllCategories() {
     try {
         const categories = await Category.findAll();

@@ -7,9 +7,10 @@ import {
     deleteProduct
 } from '../service/product.js';
 
+/** Instansiates the router. */
 const router = express.Router();
 
-// Get all items
+/** Endpoint to fetch all products. */
 router.get('/', async (req, res) => {
     try {
         const allProducts = await findAllProducts();
@@ -21,7 +22,7 @@ router.get('/', async (req, res) => {
     }
 });
 
-// Create an item
+/** Endpoint to create a product. */
 router.post('/', async (req, res) => {
     try {
         const newProduct = await createProduct(req.body);
@@ -32,7 +33,7 @@ router.post('/', async (req, res) => {
     }
 });
 
-// Find item
+/** Endpoint to find product from id. */
 router.get('/:id', async (req, res) => {
     try {
         const id = req.params.id;
@@ -47,7 +48,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-// Update an item by ID
+/** Endpoint to update a product from id. */
 router.put('/:id', async (req, res) => {
     try {
         const id = req.params.id;
@@ -64,7 +65,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-// Delete an item by ID
+/** Endpoint to delete a product from id. */
 router.delete('/:id', async (req, res) => {
     try {
         const id = req.params.id;

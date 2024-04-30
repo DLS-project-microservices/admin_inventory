@@ -1,5 +1,9 @@
 import { Category, Product } from '../models/index.js';
 
+/**
+ * Fetches all products and their category.
+ * @returns {Array}
+ */
 async function findAllProducts() {
     const products = await Product.findAll({
         include: Category // Include associated categories
@@ -7,6 +11,12 @@ async function findAllProducts() {
     return products;
 }
 
+/**
+ * Creates a new product.
+ * @constructor
+ * @param {object} product - The product to be created.
+ * @returns {object}
+ */
 async function createProduct(product) {
     try {
         // Check if the categories array is provided
@@ -27,7 +37,11 @@ async function createProduct(product) {
     }
 }
 
-
+/**
+ * Fetches a specific product based off its id.
+ * @param {int} id - The id of the object that needs to be found.
+ * @returns {object}
+ */
 async function findProduct(id) {
     const product = await Product.findOne({
         where: {
@@ -38,6 +52,12 @@ async function findProduct(id) {
     return product;
 }
 
+/**
+ * Updates a product based off its id.
+ * @param {object} product - The product containing updated information
+ * @param {int} id - The id of the product that needs updating.
+ * @returns {object}
+ */
 async function updateProduct(product, id) {
     try {
         const existingProduct = await Product.findByPk(id);
@@ -62,7 +82,11 @@ async function updateProduct(product, id) {
     }
 }
 
-
+/**
+ * Deletes a product based off its id.
+ * @param {int} id 
+ * @returns {int}
+ */
 async function deleteProduct(id) {
     const productToDelete = await Product.destroy({
         where: {
@@ -73,6 +97,7 @@ async function deleteProduct(id) {
     return productToDelete;
 }
 
+/** Exports our methods to be used by routes. */
 export {
     findAllProducts,
     createProduct,
