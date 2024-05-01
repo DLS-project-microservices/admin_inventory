@@ -12,6 +12,7 @@ async function connectToRabbitMQ() {
         }
         catch(error) {
             console.log(error);
+            throw error;
         }
         
     }

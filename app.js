@@ -6,11 +6,13 @@ import routes from './routes/routes.js';
 import categoryRoutes from './routes/categoryRoutes.js';
 import { publishProductEvent } from './messages/product.js';
 import { publishCategoryEvent } from './messages/category.js';
+import { consumeOrderStarted } from './messages/consumeOrderStarted.js';
 import insertCategories from './database/seed.js';
 
 
 await sequelize.sync({ force: true });
 await insertCategories();
+await consumeOrderStarted();
 
 
 const app = express();
