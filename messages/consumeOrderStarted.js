@@ -1,8 +1,9 @@
-import { connectToOrderExchange } from "./order.js";
+import { connectToOrderFanoutExchange } from "./connectToOrderExchanges.js";
+import { publishItemsReservedEvent } from "./publishItemsReserved.js";
 
 async function consumeOrderStarted() {
     const queueName = "inventory_consume_order_started"
-    const { channel, exchangeName } = await connectToOrderExchange();
+    const { channel, exchangeName } = await connectToOrderFanoutExchange();
 
     try {
         await channel.assertQueue(queueName, {
@@ -14,9 +15,10 @@ async function consumeOrderStarted() {
         await channel.consume(queueName, async (msg) => {
             if(msg?.content) {
                 const message = JSON.parse(msg.content.toString());
-                console.log(message);
-    
                 // No functionality added yet, only the sequence of communication through RabbitMQ
+                console.log('in consume order_started', message);
+                await publishItemsReservedEvent(message);
+  
                 channel.ack(msg);
             }
         }, { 
