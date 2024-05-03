@@ -1,7 +1,7 @@
 import connectToRabbitMQ from "./connection.js";
 
 let orderFanoutExchange;
-let orderDirectExchange;
+let productExchange;
 let channel;
 
 async function connectToOrderFanoutExchange() {
@@ -26,14 +26,14 @@ async function connectToOrderFanoutExchange() {
     }
 }
 
-async function connectToOrderDirectExchange() {
-    const exchangeName = 'order_direct';
+async function connectToProductExchange() {
+    const exchangeName = 'product';
 
-    if (!orderDirectExchange || !channel) {
+    if (!productExchange || !channel) {
         try {
             channel = await connectToRabbitMQ();
             console.log(`Connecting to RabbitMQ exchange: ${exchangeName}...`)
-            orderDirectExchange = await channel.assertExchange(exchangeName, 'direct', {
+            productExchange = await channel.assertExchange(exchangeName, 'direct', {
             durable: true
         });
             console.log(`Established connection to RabbitMQ exchange: ${exchangeName}`)
@@ -48,10 +48,10 @@ async function connectToOrderDirectExchange() {
     }
 }
 
-await connectToOrderDirectExchange();
+await connectToProductExchange();
 await connectToOrderFanoutExchange();
 
 export {
     connectToOrderFanoutExchange,
-    connectToOrderDirectExchange
+    connectToProductExchange
 }

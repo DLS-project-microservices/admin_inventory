@@ -1,4 +1,4 @@
-import { connectToOrderFanoutExchange } from "./connectToOrderExchanges.js";
+import { connectToOrderFanoutExchange } from "./connectToExchanges.js";
 import { publishItemsReservedEvent } from "./publishItemsReserved.js";
 
 async function consumeOrderStarted() {
