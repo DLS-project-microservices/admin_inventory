@@ -3,6 +3,12 @@ import amqp from 'amqplib';
 
 let channel;
 
+/**
+ * Connects to a RabbitMQ exchange and returns the channel and exchange name.
+ * If a connection has already been established, it reuses the existing channel.
+ * @returns {Promise<{channel: Object, exchange: string}>} An object containing the channel and exchange name.
+ * @throws {Error} If an error occurs while connecting to the RabbitMQ server or creating the channel.
+ */
 async function connectToRabbitMQ() {
     if (!channel) {
         try {

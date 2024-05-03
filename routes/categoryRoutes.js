@@ -8,6 +8,7 @@ import {
 } from '../service/category.js';
 import { publishCategoryEvent } from '../messages/category.js';
 
+//** Instansiates the router */
 const categoryRoutes = express.Router();
 
 categoryRoutes.get('/', async (req, res) => {
