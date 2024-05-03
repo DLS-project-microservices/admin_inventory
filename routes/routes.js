@@ -1,6 +1,7 @@
 import express from 'express';
 import { 
     findAllProducts,
+    findProductByName,
     createProduct,
     findProduct,
     updateProduct,
@@ -24,7 +25,13 @@ router.get('/', async (req, res) => {
 
 /** Endpoint to create a product. */
 router.post('/', async (req, res) => {
+    const { name } = req.body;
     try {
+        const foundProduct = await findProductByName(name);
+        if (foundProduct) {
+            return res.status(403).send({ message: `A product with the name: ${name} already exists` });
+        }
+        
         const newProduct = await createProduct(req.body);
         res.status(200).send(newProduct);
     } catch (error) {

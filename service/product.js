@@ -1,5 +1,5 @@
 import { Category, Product } from '../models/index.js';
-import publishProductEvent from '../messages/product.js'
+import { publishProductEvent } from '../messages/product.js'
 
 /**
  * Fetches all products from the database, including their associated categories.
@@ -30,9 +30,16 @@ async function createProduct(product) {
 
         // Add associations with categories
         await newProduct.addCategories(product.categories);
-        await publishProductEvent(product, "createProduct");
 
-        return newProduct;
+        const createdProduct = await Product.findOne({
+            where: {
+                id: newProduct.dataValues.id,
+            },
+            include: [Category]
+        })
+        await publishProductEvent(createdProduct, "created");
+
+        return createdProduct;
     } catch (error) {
         console.error("Error in createProduct:", error);
         throw error;
@@ -54,6 +61,18 @@ async function findProduct(id) {
     return product;
 }
 
+
+async function findProductByName(name) {
+    const product = await Product.findOne({
+        where: {
+            name: name,
+        },
+        include: [Category]
+    })
+    return product;
+}
+
+
 /**
  * Updates a product and its associated categories.
  * @param {Object} product - The product data to update.
@@ -70,14 +89,15 @@ async function updateProduct(product, id) {
 
         await existingProduct.update(product);
 
-        if (product.categories === null || product.categories.length === 0) {
+        if (!product.categories) {
             await existingProduct.setCategories([]);
         } else if (product.categories && product.categories.length > 0) {
             await existingProduct.setCategories(product.categories);
         }
 
         const updatedProduct = await Product.findByPk(id, { include: Category });
-        await publishProductEvent(product, "updateProduct");
+        await publishProductEvent(updatedProduct, "updated");
+
         return updatedProduct;
     } catch (error) {
         console.error("Error updating product:", error);
@@ -91,18 +111,21 @@ async function updateProduct(product, id) {
  * @returns {Promise<number>} The number of products deleted.
  */
 async function deleteProduct(id) {
-    const productToDelete = await Product.destroy({
+    const productToBeDeleted = await findProduct(id);
+    
+    await Product.destroy({
         where: {
-            id: id
+            id: productToBeDeleted.dataValues.id
         }
     });
-    await publishProductEvent(id, "deleteProduct");
-    console.log(productToDelete);
-    return productToDelete;
+    await publishProductEvent(productToBeDeleted, "deleted");
+
+    return productToBeDeleted;
 }
 
 export {
     findAllProducts,
+    findProductByName,
     createProduct,
     findProduct,
     updateProduct,
