@@ -1,8 +1,8 @@
 import { Category, Product } from '../models/index.js';
 
 /**
- * Fetches all products and their category.
- * @returns {Array}
+ * Fetches all products from the database, including their associated categories.
+ * @returns {Promise<Array>} An array of all products.
  */
 async function findAllProducts() {
     const products = await Product.findAll({
@@ -12,10 +12,10 @@ async function findAllProducts() {
 }
 
 /**
- * Creates a new product.
- * @constructor
- * @param {object} product - The product to be created.
- * @returns {object}
+ * Creates a new product and associates it with categories.
+ * @param {Object} product - The product to create. Must include a 'categories' array.
+ * @returns {Promise<Object>} The created product.
+ * @throws {Error} If the 'categories' array is not provided or is empty.
  */
 async function createProduct(product) {
     try {
@@ -38,9 +38,9 @@ async function createProduct(product) {
 }
 
 /**
- * Fetches a specific product based off its id.
- * @param {int} id - The id of the object that needs to be found.
- * @returns {object}
+ * Fetches a product by its ID, including its associated categories.
+ * @param {number} id - The ID of the product to fetch.
+ * @returns {Promise<Object>} The fetched product.
  */
 async function findProduct(id) {
     const product = await Product.findOne({
@@ -53,10 +53,11 @@ async function findProduct(id) {
 }
 
 /**
- * Updates a product based off its id.
- * @param {object} product - The product containing updated information
- * @param {int} id - The id of the product that needs updating.
- * @returns {object}
+ * Updates a product and its associated categories.
+ * @param {Object} product - The product data to update.
+ * @param {number} id - The ID of the product to update.
+ * @returns {Promise<Object>} The updated product.
+ * @throws {Error} If a product with the provided ID is not found.
  */
 async function updateProduct(product, id) {
     try {
@@ -83,9 +84,9 @@ async function updateProduct(product, id) {
 }
 
 /**
- * Deletes a product based off its id.
- * @param {int} id 
- * @returns {int}
+ * Deletes a product by its ID.
+ * @param {number} id - The ID of the product to delete.
+ * @returns {Promise<number>} The number of products deleted.
  */
 async function deleteProduct(id) {
     const productToDelete = await Product.destroy({
@@ -97,7 +98,6 @@ async function deleteProduct(id) {
     return productToDelete;
 }
 
-/** Exports our methods to be used by routes. */
 export {
     findAllProducts,
     createProduct,
