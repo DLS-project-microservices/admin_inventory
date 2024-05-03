@@ -2,7 +2,7 @@ import { connectToOrderFanoutExchange } from "./connectToExchanges.js";
 import { publishItemsReservedEvent } from "./publishItemsReserved.js";
 
 async function consumeOrderStarted() {
-    const queueName = "inventory_consume_order_started"
+    const queueName = "inventory_service_consume_order_started"
     const { channel, exchangeName } = await connectToOrderFanoutExchange();
 
     try {
