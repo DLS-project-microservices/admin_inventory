@@ -1,29 +1,5 @@
-import connectToRabbitMQ from "./connection.js";
+import { connectToProductExchange } from './connectToExchanges.js'
 
-let productExchange;
-let channel;
-
-async function connectToProductExchange() {
-    const exchangeName = 'product';
-
-    if (!productExchange || !channel) {
-        try {
-            channel = await connectToRabbitMQ();
-            console.log(`Conneting to RabbitMQ exchange: ${exchangeName}...`)
-            productExchange = await channel.assertExchange(exchangeName, 'direct', {
-            durable: true
-        });
-            console.log(`Established connection to RabbitMQ exchange: ${exchangeName}`)
-        }
-        catch (error) {
-            console.log(error);
-        }
-    }
-    return {
-        exchangeName,
-        channel
-    }
-}
 
 /**
  * Publishes a product event to a RabbitMQ exchange.

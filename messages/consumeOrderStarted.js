@@ -4,7 +4,7 @@ import { publishItemsReservedEvent } from "./publishItemsReserved.js";
 async function consumeOrderStarted() {
 
     const queueName = "inventory_service_consume_order_started"
-    const { channel, exchangeName } = await connectToOrderFanoutExchange();
+    const { channel, exchangeName } = await connectToOrderDirectExchange();
 
     try {
         await channel.assertQueue(queueName, {
@@ -12,7 +12,7 @@ async function consumeOrderStarted() {
         });
 
         await channel.prefetch(1);
-        await channel.bindQueue(queueName, exchangeName, '');
+        await channel.bindQueue(queueName, exchangeName, 'order started');
         await channel.consume(queueName, async (msg) => {
             if(msg?.content) {
                 const message = JSON.parse(msg.content.toString());
