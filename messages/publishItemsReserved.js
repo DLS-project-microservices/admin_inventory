@@ -1,10 +1,10 @@
 
-import { connectToOrderDirectExchange } from "./connectToExchanges.js";
+import { connectToOrderFanoutExchange } from "./connectToExchanges.js";
 
 async function publishItemsReservedEvent(message) {
-    const { channel, exchangeName } = await connectToOrderDirectExchange();
+    const { channel, exchangeName } = await connectToOrderFanoutExchange();
 
-    channel.publish(exchangeName, 'items reserved', Buffer.from(JSON.stringify(message)));
+    channel.publish(exchangeName, '', Buffer.from(JSON.stringify(message)));
 }
 
 export {
