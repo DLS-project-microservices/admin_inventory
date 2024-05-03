@@ -1,6 +1,10 @@
 import { Category, Product } from '../models/index.js';
 import publishProductEvent from '../messages/product.js'
 
+/**
+ * Fetches all products from the database, including their associated categories.
+ * @returns {Promise<Array>} An array of all products.
+ */
 async function findAllProducts() {
     const products = await Product.findAll({
         include: Category // Include associated categories
@@ -8,6 +12,12 @@ async function findAllProducts() {
     return products;
 }
 
+/**
+ * Creates a new product and associates it with categories.
+ * @param {Object} product - The product to create. Must include a 'categories' array.
+ * @returns {Promise<Object>} The created product.
+ * @throws {Error} If the 'categories' array is not provided or is empty.
+ */
 async function createProduct(product) {
     try {
         // Check if the categories array is provided
@@ -29,7 +39,11 @@ async function createProduct(product) {
     }
 }
 
-
+/**
+ * Fetches a product by its ID, including its associated categories.
+ * @param {number} id - The ID of the product to fetch.
+ * @returns {Promise<Object>} The fetched product.
+ */
 async function findProduct(id) {
     const product = await Product.findOne({
         where: {
@@ -40,6 +54,13 @@ async function findProduct(id) {
     return product;
 }
 
+/**
+ * Updates a product and its associated categories.
+ * @param {Object} product - The product data to update.
+ * @param {number} id - The ID of the product to update.
+ * @returns {Promise<Object>} The updated product.
+ * @throws {Error} If a product with the provided ID is not found.
+ */
 async function updateProduct(product, id) {
     try {
         const existingProduct = await Product.findByPk(id);
@@ -64,7 +85,11 @@ async function updateProduct(product, id) {
     }
 }
 
-
+/**
+ * Deletes a product by its ID.
+ * @param {number} id - The ID of the product to delete.
+ * @returns {Promise<number>} The number of products deleted.
+ */
 async function deleteProduct(id) {
     const productToDelete = await Product.destroy({
         where: {

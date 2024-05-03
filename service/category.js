@@ -1,5 +1,10 @@
 import { Category, Product } from '../models/index.js';
 
+/**
+ * Fetches all categories from the database.
+ * @returns {Promise<Array>} An array of all categories.
+ * @throws {Error} If an error occurs during the database operation.
+ */
 async function findAllCategories() {
     try {
         const categories = await Category.findAll();
@@ -10,6 +15,12 @@ async function findAllCategories() {
     }
 }
 
+/**
+ * Creates a new category in the database.
+ * @param {Object} category - The category to create.
+ * @returns {Promise<Object>} The created category.
+ * @throws {Error} If an error occurs during the database operation.
+ */
 async function createCategory(category) {
     try {
         const newCategory = await Category.create(category);
@@ -20,6 +31,12 @@ async function createCategory(category) {
     }
 }
 
+/**
+ * Fetches a category by its ID from the database, including its associated products.
+ * @param {number} id - The ID of the category to fetch.
+ * @returns {Promise<Object>} The fetched category.
+ * @throws {Error} If an error occurs during the database operation.
+ */
 async function findCategoryById(id) {
     try {
         const category = await Category.findOne({
@@ -35,6 +52,13 @@ async function findCategoryById(id) {
     }
 }
 
+/**
+ * Updates a category by its ID in the database.
+ * @param {Object} category - The category data to update.
+ * @param {number} id - The ID of the category to update.
+ * @returns {Promise<Object>} The updated category.
+ * @throws {Error} If an error occurs during the database operation.
+ */
 async function updateCategoryById(category, id) {
     try {
         const updatedCategory = await Category.update(category, {
@@ -49,6 +73,12 @@ async function updateCategoryById(category, id) {
     }
 }
 
+/**
+ * Deletes a category by its ID from the database.
+ * @param {number} id - The ID of the category to delete.
+ * @returns {Promise<number>} The number of categories deleted.
+ * @throws {Error} If an error occurs during the database operation.
+ */
 async function deleteCategoryById(id) {
     try {
         const categoryToDelete = await Category.destroy({
@@ -63,7 +93,7 @@ async function deleteCategoryById(id) {
     }
 }
 
- export {
+export {
     findAllCategories,
     createCategory,
     findCategoryById,
