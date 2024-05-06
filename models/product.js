@@ -23,6 +23,10 @@ const Product = sequelize.define('product', {
       type: DataTypes.INTEGER,
       defaultValue: 0,
    },
+   price: {
+      type: DataTypes.DOUBLE,
+      defaultValue: 0,
+   },
 },
 { 
    paranoid: true
