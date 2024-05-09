@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: product.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: product.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { Category, Product } from '../models/index.js';
+import { publishProductEvent } from '../messages/product.js'
+
+/**
+ * Fetches all products from the database, including their associated categories.
+ * @returns {Promise&lt;Array>} An array of all products.
+ */
+async function findAllProducts() {
+    const products = await Product.findAll({
+        include: Category // Include associated categories
+    });
+    return products;
+}
+
+/**
+ * Creates a new product and associates it with categories.
+ * @param {Object} product - The product to create. Must include a 'categories' array.
+ * @returns {Promise&lt;Object>} The created product.
+ * @throws {Error} If the 'categories' array is not provided or is empty.
+ */
+async function createProduct(product) {
+    try {
+        // Check if the categories array is provided
+        if (!product.categories || product.categories.length === 0) {
+            throw new Error("At least one category must be selected.");
+        }
+
+        // Create the product
+        const newProduct = await Product.create(product);
+
+        // Add associations with categories
+        await newProduct.addCategories(product.categories);
+
+        const createdProduct = await Product.findOne({
+            where: {
+                id: newProduct.dataValues.id,
+            },
+            include: [Category]
+        })
+        await publishProductEvent(createdProduct, "created");
+
+        return createdProduct;
+    } catch (error) {
+        console.error("Error in createProduct:", error);
+        throw error;
+    }
+}
+
+/**
+ * Fetches a product by its ID, including its associated categories.
+ * @param {number} id - The ID of the product to fetch.
+ * @returns {Promise&lt;Object>} The fetched product.
+ */
+async function findProduct(id) {
+    const product = await Product.findOne({
+        where: {
+            id: id,
+        },
+        include: [Category]
+    })
+    return product;
+}
+
+
+async function findProductByName(name) {
+    const product = await Product.findOne({
+        where: {
+            name: name,
+        },
+        include: [Category]
+    })
+    return product;
+}
+
+
+/**
+ * Updates a product and its associated categories.
+ * @param {Object} product - The product data to update.
+ * @param {number} id - The ID of the product to update.
+ * @returns {Promise&lt;Object>} The updated product.
+ * @throws {Error} If a product with the provided ID is not found.
+ */
+async function updateProduct(product, id) {
+    try {
+        const existingProduct = await Product.findByPk(id);
+        if (!existingProduct) {
+            throw new Error(`Product with ID ${id} not found`);
+        }
+
+        await existingProduct.update(product);
+
+        if (!product.categories) {
+            await existingProduct.setCategories([]);
+        } else if (product.categories &amp;&amp; product.categories.length > 0) {
+            await existingProduct.setCategories(product.categories);
+        }
+
+        const updatedProduct = await Product.findByPk(id, { include: Category });
+        await publishProductEvent(updatedProduct, "updated");
+
+        return updatedProduct;
+    } catch (error) {
+        console.error("Error updating product:", error);
+        throw error;
+    }
+}
+
+/**
+ * Deletes a product by its ID.
+ * @param {number} id - The ID of the product to delete.
+ * @returns {Promise&lt;number>} The number of products deleted.
+ */
+async function deleteProduct(id) {
+    const productToBeDeleted = await findProduct(id);
+    
+    await Product.destroy({
+        where: {
+            id: productToBeDeleted.dataValues.id
+        }
+    });
+    await publishProductEvent(productToBeDeleted, "deleted");
+
+    return productToBeDeleted;
+}
+
+export {
+    findAllProducts,
+    findProductByName,
+    createProduct,
+    findProduct,
+    updateProduct,
+    deleteProduct
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#createProduct">createProduct</a></li><li><a href="global.html#deleteProduct">deleteProduct</a></li><li><a href="global.html#findAllProducts">findAllProducts</a></li><li><a href="global.html#findProduct">findProduct</a></li><li><a href="global.html#updateProduct">updateProduct</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.3</a> on Thu May 09 2024 16:27:24 GMT+0200 (Centraleuropæisk sommertid)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
