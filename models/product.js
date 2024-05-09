@@ -25,7 +25,7 @@ const Product = sequelize.define('product', {
    },
    price: {
       type: DataTypes.DOUBLE,
-      defaultValue: 0,
+      allowNull: false,
    },
 },
 { 
