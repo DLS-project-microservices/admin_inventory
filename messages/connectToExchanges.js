@@ -1,16 +1,16 @@
-import connectToRabbitMQ from "./connection.js";
+import { connectToRabbitMQ } from "amqplib-retry-wrapper-dls";
 
 let orderDirectExchange;
 let orderFanoutExchange;
 let productExchange
-let channel;
+
+const channel = await connectToRabbitMQ(process.env.AMQP_HOST);
 
 async function connectToOrderDirectExchange() {
     const exchangeName = 'order_direct';
 
     if (!orderDirectExchange || !channel) {
         try {
-            channel = await connectToRabbitMQ();
             console.log(`Connecting to RabbitMQ exchange: ${exchangeName}...`)
             orderDirectExchange = await channel.assertExchange(exchangeName, 'direct', {
             durable: true
@@ -32,7 +32,6 @@ async function connectToOrderFanoutExchange() {
 
     if (!orderFanoutExchange || !channel) {
         try {
-            channel = await connectToRabbitMQ();
             console.log(`Connecting to RabbitMQ exchange: ${exchangeName}...`)
             orderFanoutExchange = await channel.assertExchange(exchangeName, 'fanout', {
                 durable: true
@@ -49,13 +48,11 @@ async function connectToOrderFanoutExchange() {
     }
 }
 
-
 async function connectToProductExchange() {
     const exchangeName = 'product';
 
     if (!productExchange || !channel) {
         try {
-            channel = await connectToRabbitMQ();
             console.log(`Conneting to RabbitMQ exchange: ${exchangeName}...`)
             productExchange = await channel.assertExchange(exchangeName, 'direct', {
             durable: true
@@ -71,7 +68,6 @@ async function connectToProductExchange() {
         channel
     }
 }
-
 
 await connectToOrderDirectExchange();
 await connectToOrderFanoutExchange();

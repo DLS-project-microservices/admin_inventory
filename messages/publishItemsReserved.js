@@ -1,9 +1,8 @@
-
 import { connectToOrderFanoutExchange } from "./connectToExchanges.js";
 
-async function publishItemsReservedEvent(message) {
-    const { channel, exchangeName } = await connectToOrderFanoutExchange();
+const { channel, exchangeName } = await connectToOrderFanoutExchange();
 
+async function publishItemsReservedEvent(message) {
     channel.publish(exchangeName, '', Buffer.from(JSON.stringify(message)));
 }
 

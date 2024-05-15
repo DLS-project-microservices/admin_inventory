@@ -1,5 +1,6 @@
 import { connectToProductExchange } from './connectToExchanges.js'
 
+const { exchangeName, channel} = await connectToProductExchange();
 
 /**
  * Publishes a product event to a RabbitMQ exchange.
@@ -12,9 +13,6 @@ async function publishProductEvent(product, productStatus) {
     if (!product || !productStatus) {
         throw new Error('Invalid parameters: need to have both product and productStatus arguments')
     }
-
-    const { exchangeName, channel} = await connectToProductExchange();
-
     const message = {
         status: productStatus,
         product: product

@@ -1,11 +1,11 @@
 import { connectToOrderDirectExchange } from "./connectToExchanges.js";
 import { publishItemsReservedEvent } from "./publishItemsReserved.js";
 
+const { channel, exchangeName } = await connectToOrderDirectExchange();
+
 async function consumeOrderStarted() {
-
     const queueName = "inventory_service_consume_order_started"
-    const { channel, exchangeName } = await connectToOrderDirectExchange();
-
+    
     try {
         await channel.assertQueue(queueName, {
             durable: true
