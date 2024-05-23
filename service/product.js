@@ -24,6 +24,7 @@ async function createProduct(product) {
         if (!product.categories || product.categories.length === 0) {
             throw new Error("At least one category must be selected.");
         }
+        
 
         // Create the product
         const newProduct = await Product.create(product);
