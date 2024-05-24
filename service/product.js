@@ -106,6 +106,50 @@ async function updateProduct(product, id) {
     }
 }
 
+
+async function decrementProduct(id, quantity) {
+    try {
+        const existingProduct = await Product.findByPk(id);
+        if (!existingProduct) {
+            throw new Error(`Product with ID ${id} not found`);
+        }
+
+        if (existingProduct.quantity < quantity) {
+            throw new Error(`Not enough stock for product ID ${id}. Available: ${existingProduct.quantity}, Required: ${quantity}`);
+        }
+
+        await existingProduct.decrement('quantity', { by: quantity });
+
+        const updatedProduct = await Product.findByPk(id, { include: Category });
+        await publishProductEvent(updatedProduct, "updated");
+
+        return updatedProduct;
+    } catch (error) {
+        console.error("Error updating product:", error);
+        throw error;
+    }
+}
+
+
+async function incrementProduct(id, quantity) {
+    try {
+        const existingProduct = await Product.findByPk(id);
+        if (!existingProduct) {
+            throw new Error(`Product with ID ${id} not found`);
+        }
+
+        await existingProduct.increment('quantity', { by: quantity });
+
+        const updatedProduct = await Product.findByPk(id, { include: Category });
+        await publishProductEvent(updatedProduct, "updated");
+
+        return updatedProduct;
+    } catch (error) {
+        console.error("Error updating product:", error);
+        throw error;
+    }
+}
+
 /**
  * Deletes a product by its ID.
  * @param {number} id - The ID of the product to delete.
@@ -130,5 +174,8 @@ export {
     createProduct,
     findProduct,
     updateProduct,
-    deleteProduct
+    deleteProduct,
+    decrementProduct,
+    incrementProduct
+
 }

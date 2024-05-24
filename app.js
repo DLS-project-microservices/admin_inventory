@@ -7,12 +7,14 @@ import categoryRoutes from './routes/categoryRoutes.js';
 import { publishProductEvent } from './messages/product.js';
 import { publishCategoryEvent } from './messages/category.js';
 import { consumeOrderStarted } from './messages/consumeOrderStarted.js';
+import { consumeOrderFailed } from './messages/consumeOrderFailed.js'
 import insertCategories from './database/seed.js';
 
 
 await sequelize.sync({ force: true });
 await insertCategories();
 await consumeOrderStarted();
+await consumeOrderFailed();
 
 
 const app = express();
