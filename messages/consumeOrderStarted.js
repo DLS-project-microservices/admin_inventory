@@ -42,7 +42,6 @@ async function consumeOrderStarted() {
 
                 if (allItemsAvailable) {
                     for (const item of orderLineItems) {
-                        console.log(item)
                         decrementProduct(item.productId, item.quantity)
                     }
                     await publishItemsReservedEvent(message);

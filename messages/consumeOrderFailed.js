@@ -24,10 +24,9 @@ async function consumeOrderFailed() {
 
                 for (const item of orderLineItems) {
                     const product = await Product.findOne({ where: { id: item.productId } });
-                    console.log(product)
 
                     if (product) {
-                       incrementProduct(product.id, product.quantity)
+                       incrementProduct(product.id, item.quantity);
                         console.log(`Added ${item.quantity} to product ID ${item.productId}. New quantity: ${product.quantity}`);
                     } else {
                         console.error(`Product with ID ${item.productId} does not exist.`);

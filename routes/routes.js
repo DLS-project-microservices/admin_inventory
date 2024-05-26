@@ -15,7 +15,6 @@ const router = express.Router();
 router.get('/', async (req, res) => {
     try {
         const allProducts = await findAllProducts();
-        console.log(allProducts);
         res.status(200).send(allProducts);
     } catch (error) {
         console.error("Error fetching all products:", error);
